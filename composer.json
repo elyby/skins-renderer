@@ -1,0 +1,40 @@
+{
+    "name": "elyby/skins-renderer",
+    "type": "project",
+    "require": {
+        "php": "^7.2.0",
+        "ext-gd": "*",
+        "ErickSkrauch/SkinRenderer2D": "dev-master",
+        "guzzlehttp/guzzle": "^6.3",
+        "php-pm/php-pm": "^1.0",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
+    },
+    "replace": {
+        "symfony/polyfill-mbstring": "*"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "ErickSkrauch",
+            "email": "erickskrauch@yandex.ru"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/erickskrauch/SkinRenderer2D.git"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ely\\SkinsRenderer\\": "src",
+            "PHPPM\\Bridges\\": "src/Bridges"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "bridge": "SkinsRenderer",
+    "app-env": "dev",
+    "debug": 1,
+    "logging": 1,
+    "static-directory": "",
+    "max-requests": 1000,
+    "max-execution-time": 30,
+    "ttl": 0,
+    "populate-server-var": true,
+    "socket-path": ".ppm\/run\/",
+    "pidfile": ".ppm\/ppm.pid",
+    "reload-timeout": 30
+}
