@@ -10,6 +10,7 @@
         "psr/http-message": "^1.0"
     },
     "require-dev": {
+        "phpunit/phpunit": "^7.3",
         "roave/security-advisories": "dev-master"
     },
     "replace": {
@@ -35,6 +36,11 @@
         "psr-4": {
             "Ely\\SkinsRenderer\\": "src",
             "PHPPM\\Bridges\\": "src/Bridges"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ely\\SkinsRenderer\\Tests\\": "tests"
         }
     }
 }

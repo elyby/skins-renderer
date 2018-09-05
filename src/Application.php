@@ -4,29 +4,30 @@ declare(strict_types=1);
 namespace Ely\SkinsRenderer;
 
 use ErickSkrauch\SkinRenderer2D\Renderer as SkinsRenderer;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 
 class Application {
 
+    /**
+     * @var ClientInterface|null
+     */
     private $guzzle;
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $path = $request->getUri()->getPath();
-        if ($path === '/sleep') {
-            sleep(10);
-        }
-
         if ($path !== '/') {
             return new Response(404);
         }
 
         $getParams = $request->getQueryParams();
         $url = $getParams['url'] ?? null;
-        $scale = $getParams['scale'] ?? 3;
+        $scale = (int)($getParams['scale'] ?? 3);
         $renderFace = $getParams['renderFace'] ?? false;
 
         if ($url === null) {
@@ -36,8 +37,9 @@ class Application {
         try {
             $response = $this->getClient()->request('GET', $url);
         } catch (ClientException $e) {
-            return new Response($e->getResponse()->getStatusCode(), [], $e->getResponse()->getBody()->getContents());
-        } catch (\Exception $e) {
+            $response = $e->getResponse();
+            return new Response($response->getStatusCode(), [], $response->getBody()->getContents());
+        } catch (GuzzleException $e) {
             return new Response(500, [], $e->getMessage());
         }
 
@@ -59,7 +61,9 @@ class Application {
 
     public function getClient(): ClientInterface {
         if ($this->guzzle === null) {
-            $this->guzzle = new \GuzzleHttp\Client();
+            $this->guzzle = new GuzzleClient([
+                // TODO: adjust time limits
+            ]);
         }
 
         return $this->guzzle;

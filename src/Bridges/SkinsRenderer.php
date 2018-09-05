@@ -14,7 +14,7 @@ class SkinsRenderer implements BridgeInterface {
      */
     private $application;
 
-    public function bootstrap($appBootstrap, $appenv, $debug): void {
+    public function bootstrap($appBootstrap, $appEnv, $debug): void {
         $this->application = new Application();
     }
 
