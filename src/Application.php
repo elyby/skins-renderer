@@ -56,11 +56,15 @@ class Application {
             return new Response(400);
         }
 
-        $renderer = SkinsRenderer::assignSkinFromString($textures);
-        if ($renderFace) {
-            $result = $renderer->renderFace($scale);
-        } else {
-            $result = $renderer->renderCombined($scale);
+        try {
+            $renderer = SkinsRenderer::assignSkinFromString($textures);
+            if ($renderFace) {
+                $result = $renderer->renderFace($scale);
+            } else {
+                $result = $renderer->renderCombined($scale);
+            }
+        } catch (\Exception $e) {
+            return new Response(400);
         }
 
         ob_start();

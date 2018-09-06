@@ -132,13 +132,21 @@ class ApplicationTest extends TestCase {
             null,
             503,
         ];
-        yield 'provided url is not a skin' => [
+        yield 'provided url is not a png' => [
             '/',
             ['url' => 'http://localhost/char.png'],
             400,
             null,
             200,
             '<html><head><title>YOLO</title></head><body>Hello world!</body></html>',
+        ];
+        yield 'provided url is not a skin' => [
+            '/',
+            ['url' => 'http://localhost/char.png'],
+            400,
+            null,
+            200,
+            file_get_contents(__DIR__ . '/data/char-rendered.png'),
         ];
     }
 
