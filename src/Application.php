@@ -51,6 +51,11 @@ class Application {
             return new Response(400);
         }
 
+        $sizes = @getimagesizefromstring($textures);
+        if ($sizes === false || $sizes[2] !== IMAGETYPE_PNG) {
+            return new Response(400);
+        }
+
         $renderer = SkinsRenderer::assignSkinFromString($textures);
         if ($renderFace) {
             $result = $renderer->renderFace($scale);
