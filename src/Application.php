@@ -14,6 +14,8 @@ use React\Http\Response;
 
 class Application {
 
+    private const MAX_RESPONSE_SIZE = 16000;
+
     /**
      * @var ClientInterface|null
      */
@@ -43,7 +45,12 @@ class Application {
             return new Response(500, [], $e->getMessage());
         }
 
-        $textures = (string)$response->getBody();
+        $body = $response->getBody();
+        $textures = $body->read(self::MAX_RESPONSE_SIZE);
+        if (!$body->eof()) {
+            return new Response(400);
+        }
+
         $renderer = SkinsRenderer::assignSkinFromString($textures);
         if ($renderFace) {
             $result = $renderer->renderFace($scale);
@@ -62,7 +69,11 @@ class Application {
     public function getClient(): ClientInterface {
         if ($this->guzzle === null) {
             $this->guzzle = new GuzzleClient([
-                // TODO: adjust time limits
+                'connect_timeout' => 5,
+                'decode_content' => false,
+                'read_timeout' => 5,
+                'stream' => true,
+                'timeout' => 10,
             ]);
         }
 

@@ -117,6 +117,14 @@ class ApplicationTest extends TestCase {
             null,
             404,
         ];
+        yield 'skin response too big' => [
+            '/',
+            ['url' => 'http://localhost/char.png'],
+            400,
+            null,
+            200,
+            file_get_contents(__DIR__ . '/data/char-big.png'),
+        ];
         yield 'skin load server error' => [
             '/',
             ['url' => 'http://localhost/char.png'],
