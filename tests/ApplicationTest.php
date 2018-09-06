@@ -70,7 +70,7 @@ class ApplicationTest extends TestCase {
     public function getCases() {
         yield 'success response' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             200,
             __DIR__ . '/data/char-rendered.png',
             200,
@@ -78,7 +78,7 @@ class ApplicationTest extends TestCase {
         ];
         yield 'success response scale@10' => [
             '/',
-            ['url' => 'http://localhost/char.png', 'scale' => '10'],
+            ['url' => 'http://ely.by/char.png', 'scale' => '10'],
             200,
             __DIR__ . '/data/char-rendered-scale-10.png',
             200,
@@ -86,7 +86,7 @@ class ApplicationTest extends TestCase {
         ];
         yield 'success response with face render' => [
             '/',
-            ['url' => 'http://localhost/char.png', 'renderFace' => '1'],
+            ['url' => 'http://ely.by/char.png', 'renderFace' => '1'],
             200,
             __DIR__ . '/data/char-face-rendered.png',
             200,
@@ -94,7 +94,7 @@ class ApplicationTest extends TestCase {
         ];
         yield 'success response with face render scale@10' => [
             '/',
-            ['url' => 'http://localhost/char.png', 'renderFace' => '1', 'scale' => '10'],
+            ['url' => 'http://ely.by/char.png', 'renderFace' => '1', 'scale' => '10'],
             200,
             __DIR__ . '/data/char-face-rendered-scale-10.png',
             200,
@@ -102,7 +102,7 @@ class ApplicationTest extends TestCase {
         ];
         yield 'unknown route' => [
             '/unknown-route',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             404,
         ];
         yield 'url not provided' => [
@@ -110,16 +110,21 @@ class ApplicationTest extends TestCase {
             [],
             400,
         ];
+        yield 'url not allowed' => [
+            '/',
+            ['url' => 'http://some-minecraft-resource.com/char.png'],
+            403,
+        ];
         yield 'skin not found' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             404,
             null,
             404,
         ];
         yield 'skin response too big' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             400,
             null,
             200,
@@ -127,14 +132,14 @@ class ApplicationTest extends TestCase {
         ];
         yield 'skin load server error' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             500,
             null,
             503,
         ];
         yield 'provided url is not a png' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             400,
             null,
             200,
@@ -142,7 +147,7 @@ class ApplicationTest extends TestCase {
         ];
         yield 'provided url is not a skin' => [
             '/',
-            ['url' => 'http://localhost/char.png'],
+            ['url' => 'http://ely.by/char.png'],
             400,
             null,
             200,

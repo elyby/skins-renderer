@@ -16,6 +16,9 @@ class Application {
 
     private const MAX_RESPONSE_SIZE = 16000;
 
+    // TODO: make it configurable
+    private const ALLOWED_HOSTS = ['ely.by', 'dev.ely.by', 'ely.by.local', 'upgrade.ely.by.local'];
+
     /**
      * @var ClientInterface|null
      */
@@ -34,6 +37,11 @@ class Application {
 
         if ($url === null) {
             return new Response(400);
+        }
+
+        $host = parse_url($url, PHP_URL_HOST);
+        if (!in_array($host, self::ALLOWED_HOSTS, true)) {
+            return new Response(403);
         }
 
         try {
