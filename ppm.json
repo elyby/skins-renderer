@@ -1,5 +1,7 @@
 {
     "bridge": "SkinsRenderer",
+    "host": "0.0.0.0",
+    "port": "80",
     "app-env": "dev",
     "debug": 1,
     "logging": 1,

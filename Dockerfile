@@ -48,5 +48,7 @@ COPY ./docker/docker-entrypoint.sh /usr/local/bin/
 COPY ./src /var/www/html/src/
 COPY ./ppm.json /var/www/html/ppm.json
 
+EXPOSE 80
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["vendor/bin/ppm", "start"]
