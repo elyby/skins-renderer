@@ -1,6 +1,16 @@
 {
-    "name": "elyby/skins-renderer",
+    "name": "elyby/skins-renderer-server",
     "type": "project",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "ErickSkrauch",
+            "email": "erickskrauch@yandex.ru"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "php": "^7.2.0",
         "ext-gd": "*",
@@ -16,16 +26,6 @@
     "replace": {
         "symfony/polyfill-mbstring": "*"
     },
-    "config": {
-        "sort-packages": true
-    },
-    "license": "Apache 2.0",
-    "authors": [
-        {
-            "name": "ErickSkrauch",
-            "email": "erickskrauch@yandex.ru"
-        }
-    ],
     "repositories": [
         {
             "type": "git",
