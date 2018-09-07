@@ -77,7 +77,7 @@ class Application {
 
         ob_start();
         imagepng($result);
-        $contents =  ob_get_contents();
+        $contents = ob_get_contents();
         ob_end_clean();
 
         return new Response(200, ['Content-Type' => 'image/png'], $contents);

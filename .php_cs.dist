@@ -1,0 +1,8 @@
+<?php
+$finder = \PhpCsFixer\Finder::create()
+    ->in(__DIR__)
+    ->notPath('#^docker/.*#')
+    ->notPath('#^.ppm/.*#');
+
+return \Ely\CS\Config::create()
+    ->setFinder($finder);

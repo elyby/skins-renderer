@@ -20,6 +20,8 @@
         "psr/http-message": "^1.0"
     },
     "require-dev": {
+        "ely/php-code-style": "^0.2.0",
+        "friendsofphp/php-cs-fixer": "^2.13",
         "phpunit/phpunit": "^7.3",
         "roave/security-advisories": "dev-master"
     },
