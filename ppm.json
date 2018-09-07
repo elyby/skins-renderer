@@ -7,7 +7,7 @@
     "logging": 1,
     "static-directory": "",
     "max-requests": 1000,
-    "max-execution-time": 30,
+    "max-execution-time": 15,
     "ttl": 0,
     "populate-server-var": true,
     "socket-path": ".ppm\/run\/",
