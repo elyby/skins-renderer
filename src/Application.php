@@ -83,6 +83,9 @@ class Application {
         return new Response(200, ['Content-Type' => 'image/png'], $contents);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getClient(): ClientInterface {
         if ($this->guzzle === null) {
             $this->guzzle = new GuzzleClient([

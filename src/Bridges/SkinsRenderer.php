@@ -7,6 +7,9 @@ use Ely\SkinsRenderer\Application;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SkinsRenderer implements BridgeInterface {
 
     /**

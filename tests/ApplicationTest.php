@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * @covers \Ely\SkinsRenderer\Application
+ */
 class ApplicationTest extends TestCase {
 
     /**
@@ -41,6 +44,7 @@ class ApplicationTest extends TestCase {
 
     /**
      * @dataProvider getCases
+     * @covers \Ely\SkinsRenderer\Application::handle
      */
     public function testHandle(
         string $requestUrl,

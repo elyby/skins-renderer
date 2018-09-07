@@ -1,0 +1,37 @@
+stages:
+  - Build
+  - Tests
+
+Install Composer dependencies:
+  image: edbizarro/gitlab-ci-pipeline-php:7.2-alpine
+  stage: Build
+  cache:
+    key: vendor
+    paths:
+      - vendor
+  script:
+    - composer install --ignore-platform-reqs
+
+PHP-CS-Fixer:
+  image: edbizarro/gitlab-ci-pipeline-php:7.2-alpine
+  stage: Tests
+  dependencies:
+    - Install Composer dependencies
+  cache:
+    key: vendor
+    paths:
+      - vendor
+  script:
+    - vendor/bin/php-cs-fixer fix -v --dry-run
+
+PHPUnit:
+  image: edbizarro/gitlab-ci-pipeline-php:7.2-alpine
+  stage: Tests
+  dependencies:
+    - Install Composer dependencies
+  cache:
+    key: vendor
+    paths:
+      - vendor
+  script:
+    - vendor/bin/phpunit --coverage-text
