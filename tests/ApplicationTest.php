@@ -3,160 +3,80 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Tests;
 
+use AspectMock\Test;
 use Ely\SkinsRenderer\Application;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
+use Ely\SkinsRenderer\Exceptions\InvalidRequestException;
+use Ely\SkinsRenderer\Exceptions\UnknownUrlException;
+use Ely\SkinsRenderer\Handlers\HandlerFactory;
+use Ely\SkinsRenderer\Handlers\HandlerInterface;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
+use React\Http\Response;
 
 /**
  * @covers \Ely\SkinsRenderer\Application
  */
 class ApplicationTest extends TestCase {
 
-    /**
-     * @var MockHandler
-     */
-    private $handler;
+    public function tearDown() {
+        Test::clean();
+    }
 
-    /**
-     * @var Application
-     */
-    private $application;
-
-    /**
-     * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
-
-    protected function setUp() {
-        $this->handler = new MockHandler();
-        $handler = HandlerStack::create($this->handler);
-        $client = new GuzzleClient(['handler' => $handler]);
-        /** @var Application|\PHPUnit\Framework\MockObject\MockObject application */
-        $this->application = $this->createPartialMock(Application::class, ['getClient']);
-        $this->application->method('getClient')->willReturn($client);
-        $this->request = $this->createMock(ServerRequestInterface::class);
+    public function testHandle() {
+        $expectedResponse = new Response(200, [], 'find me');
+        $handler = $this->createMock(HandlerInterface::class);
+        $handler->method('handle')->willReturn($expectedResponse);
+        Test::double(HandlerFactory::class, ['createFromRequest' => $handler]);
+        $application = new Application();
+        /** @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $application->handle($request);
+        $this->assertSame($expectedResponse, $response);
     }
 
     /**
-     * @dataProvider getCases
-     * @covers \Ely\SkinsRenderer\Application::handle
+     * @dataProvider getExceptionsMap
      */
-    public function testHandle(
-        string $requestUrl,
-        array $queryParams,
-        int $expectedResponseStatus,
-        string $expectedResponseBodyPath = null,
-        int $skinResponseStatus = null,
-        string $skinResponseBody = null
+    public function testHandleException(
+        Exception $thrownException,
+        int $expectedStatusCode,
+        string $expectedMessageInDebugMode
     ) {
-        $uri = $this->createMock(UriInterface::class);
-        $uri->method('getPath')->willReturn($requestUrl);
-        $this->request->method('getUri')->willReturn($uri);
-        $this->request->method('getQueryParams')->willReturn($queryParams);
-        if ($skinResponseStatus !== null) {
-            $this->handler->append(new Response($skinResponseStatus, [], $skinResponseBody));
-        }
+        Test::double(HandlerFactory::class, ['createFromRequest' => function() use ($thrownException) {
+            throw $thrownException;
+        }]);
+        $application = new Application();
+        /** @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $application->handle($request);
+        $this->assertSame($expectedStatusCode, $response->getStatusCode());
+        $this->assertSame('', (string)$response->getBody());
 
-        $response = $this->application->handle($this->request);
-        $this->assertSame($expectedResponseStatus, $response->getStatusCode());
-        if ($expectedResponseStatus === 200) {
-            $this->assertSame('image/png', $response->getHeaderLine('Content-Type'));
-            $content = $response->getBody()->getContents();
-            $this->assertStringEqualsFile($expectedResponseBodyPath, $content);
-        }
+        $application->setDebug(true);
+        $response = $application->handle($request);
+        $this->assertSame($expectedStatusCode, $response->getStatusCode());
+        $this->assertSame($expectedMessageInDebugMode, (string)$response->getBody());
     }
 
-    public function getCases() {
-        yield 'success response' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            200,
-            __DIR__ . '/data/char-rendered.png',
-            200,
-            file_get_contents(__DIR__ . '/data/char.png'),
-        ];
-        yield 'success response scale@10' => [
-            '/',
-            ['url' => 'http://ely.by/char.png', 'scale' => '10'],
-            200,
-            __DIR__ . '/data/char-rendered-scale-10.png',
-            200,
-            file_get_contents(__DIR__ . '/data/char.png'),
-        ];
-        yield 'success response with face render' => [
-            '/',
-            ['url' => 'http://ely.by/char.png', 'renderFace' => '1'],
-            200,
-            __DIR__ . '/data/char-face-rendered.png',
-            200,
-            file_get_contents(__DIR__ . '/data/char.png'),
-        ];
-        yield 'success response with face render scale@10' => [
-            '/',
-            ['url' => 'http://ely.by/char.png', 'renderFace' => '1', 'scale' => '10'],
-            200,
-            __DIR__ . '/data/char-face-rendered-scale-10.png',
-            200,
-            file_get_contents(__DIR__ . '/data/char.png'),
-        ];
-        yield 'unknown route' => [
-            '/unknown-route',
-            ['url' => 'http://ely.by/char.png'],
-            404,
-        ];
-        yield 'url not provided' => [
-            '/',
-            [],
-            400,
-        ];
-        yield 'url not allowed' => [
-            '/',
-            ['url' => 'http://some-minecraft-resource.com/char.png'],
-            403,
-        ];
-        yield 'skin not found' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            404,
-            null,
-            404,
-        ];
-        yield 'skin response too big' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            400,
-            null,
-            200,
-            file_get_contents(__DIR__ . '/data/char-big.png'),
-        ];
-        yield 'skin load server error' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            500,
-            null,
-            503,
-        ];
-        yield 'provided url is not a png' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            400,
-            null,
-            200,
-            '<html><head><title>YOLO</title></head><body>Hello world!</body></html>',
-        ];
-        yield 'provided url is not a skin' => [
-            '/',
-            ['url' => 'http://ely.by/char.png'],
-            400,
-            null,
-            200,
-            file_get_contents(__DIR__ . '/data/char-rendered.png'),
-        ];
+    public function getExceptionsMap() {
+        yield [new UnknownUrlException('/test'), 404, 'Unknown url'];
+        yield [new InvalidRequestException('Find me'), 400, 'Find me'];
+        yield [new Exception('Some shit happened'), 500, 'Some shit happened'];
+    }
+
+    public function testSetEnvironment() {
+        $application = new Application();
+        $this->assertSame('prod', $application->getEnvironment());
+        $application->setEnvironment('dev');
+        $this->assertSame('dev', $application->getEnvironment());
+    }
+
+    public function testSetDebug() {
+        $application = new Application();
+        $this->assertFalse($application->isDebug());
+        $application->setDebug(true);
+        $this->assertTrue($application->isDebug());
     }
 
 }

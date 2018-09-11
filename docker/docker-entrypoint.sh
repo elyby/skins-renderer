@@ -8,7 +8,7 @@ PHP_DEV_INI="/usr/local/etc/php/conf.d/php.dev.ini"
 APP_ENV=$(echo "${APP_ENV:-prod}")
 APP_DEBUG=$(echo "${APP_DEBUG:-false}" | awk '{print tolower($0)}')
 case "$APP_DEBUG" in
-    "true" | "on" | "yes")
+    "true" | "on" | "yes" | "1")
         IS_DEBUG=1
         ;;
     *)
@@ -16,7 +16,7 @@ case "$APP_DEBUG" in
         ;;
 esac
 
-if [ "$IS_DEBUG" = 1 ] ; then
+if [ "$APP_ENV" = "dev" ] ; then
     echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $XDEBUG_EXTENSION_FILE
     mv ${PHP_PROD_INI}{,.disabled} 2> /dev/null || true
     mv ${PHP_DEV_INI}{.disabled,} 2> /dev/null || true

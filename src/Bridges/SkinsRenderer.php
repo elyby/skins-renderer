@@ -17,8 +17,10 @@ class SkinsRenderer implements BridgeInterface {
      */
     private $application;
 
-    public function bootstrap($appBootstrap, $appEnv, $debug): void {
+    public function bootstrap($appBootstrap, $env, $debug): void {
         $this->application = new Application();
+        $this->application->setDebug($debug);
+        $this->application->setEnvironment($env);
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
