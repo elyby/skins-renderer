@@ -36,7 +36,7 @@ class Application {
         $renderFace = $getParams['renderFace'] ?? false;
 
         if ($url === null) {
-            return new Response(400);
+            return new Response(400, [], 'url not provided');
         }
 
         $host = parse_url($url, PHP_URL_HOST);
@@ -54,14 +54,22 @@ class Application {
         }
 
         $body = $response->getBody();
-        $textures = $body->read(self::MAX_RESPONSE_SIZE);
-        if (!$body->eof()) {
-            return new Response(400);
+        $textures = '';
+        $partSize = 1024;
+        while ($part = $body->read($partSize)) {
+            $textures .= $part;
+            if (mb_strlen($textures, '8bit') > self::MAX_RESPONSE_SIZE) {
+                return new Response(400, [], 'skin body response is too long');
+            }
+
+            if (mb_strlen($part, '8bit') < $partSize) {
+                break;
+            }
         }
 
         $sizes = @getimagesizefromstring($textures);
         if ($sizes === false || $sizes[2] !== IMAGETYPE_PNG) {
-            return new Response(400);
+            return new Response(400, [], 'skin body response is not a png');
         }
 
         try {
@@ -72,7 +80,7 @@ class Application {
                 $result = $renderer->renderCombined($scale);
             }
         } catch (\Exception $e) {
-            return new Response(400);
+            return new Response(400, [], 'cannot render skin: ' . $e->getMessage());
         }
 
         ob_start();
