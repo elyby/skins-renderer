@@ -1,7 +1,9 @@
 <?php
 $finder = \PhpCsFixer\Finder::create()
     ->in(__DIR__)
+    ->notPath('#^build/.*#')
     ->notPath('#^docker/.*#')
+    ->notPath('#^tests/_aop_cache/.*#')
     ->notPath('#^.ppm/.*#');
 
 return \Ely\CS\Config::create()
