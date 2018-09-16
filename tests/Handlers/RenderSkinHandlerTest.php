@@ -102,6 +102,7 @@ class RenderSkinHandlerTest extends TestCase {
     }
 
     public function getResponseCases() {
+        // Skins renders
         yield 'success response' => [
             ['url' => 'http://ely.by/char.png'],
             200,
@@ -116,6 +117,21 @@ class RenderSkinHandlerTest extends TestCase {
             200,
             file_get_contents(__DIR__ . '/../data/char.png'),
         ];
+        yield 'success response for slim skin' => [
+            ['url' => 'http://ely.by/char.png', 'slim' => '1'],
+            200,
+            __DIR__ . '/../data/char-rendered-slim.png',
+            200,
+            file_get_contents(__DIR__ . '/../data/char-slim.png'),
+        ];
+        yield 'slim skin should be rendered as Steve if "slim" param not provided' => [
+            ['url' => 'http://ely.by/char.png'],
+            200,
+            __DIR__ . '/../data/char-rendered-slim-steve.png',
+            200,
+            file_get_contents(__DIR__ . '/../data/char-slim.png'),
+        ];
+        // Face renders
         yield 'success response with face render' => [
             ['url' => 'http://ely.by/char.png', 'renderFace' => '1'],
             200,
@@ -130,6 +146,7 @@ class RenderSkinHandlerTest extends TestCase {
             200,
             file_get_contents(__DIR__ . '/../data/char.png'),
         ];
+        // Some expected errors
         yield 'url not allowed' => [
             ['url' => 'http://some-minecraft-resource.com/char.png'],
             403,
@@ -174,6 +191,13 @@ class RenderSkinHandlerTest extends TestCase {
             'Unable to render provided skin url',
             200,
             file_get_contents(__DIR__ . '/../data/char-rendered.png'),
+        ];
+        yield 'request to render non 1.8 skin as slim' => [
+            ['url' => 'http://ely.by/char.png', 'slim' => '1'],
+            InvalidRequestException::class,
+            'Cannot render skin with slim arms for non 1.8 skin format',
+            200,
+            file_get_contents(__DIR__ . '/../data/char.png'),
         ];
     }
 

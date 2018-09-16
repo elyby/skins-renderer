@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Ely\SkinsRenderer\Handlers;
 
 use Ely\SkinsRenderer\Exceptions\InvalidRequestException;
-use ErickSkrauch\SkinRenderer2D\Renderer as SkinsRenderer;
+use Ely\SkinsRenderer\Renderer\Renderer as SkinsRenderer;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -50,7 +50,8 @@ class RenderSkinHandler implements HandlerInterface {
         $params = $request->getQueryParams();
         $url = $params['url'] ?? null;
         $scale = (float)($params['scale'] ?? 3);
-        $renderFace = $params['renderFace'] ?? false;
+        $isSlim = (bool)($params['slim'] ?? false);
+        $renderFace = (bool)($params['renderFace'] ?? false);
 
         if ($url === null) {
             throw new InvalidRequestException('Required query params not provided: url');
@@ -95,8 +96,18 @@ class RenderSkinHandler implements HandlerInterface {
             if ($renderFace) {
                 $result = $renderer->renderFace($scale);
             } else {
+                // Prevent autodetect slim arms
+                $renderer->setIsSlim($isSlim);
+                // Due to overridden implementation check 1.8 format manually
+                if ($isSlim && !$renderer->is1_8()) {
+                    throw new InvalidRequestException('Cannot render skin with slim arms for non 1.8 skin format');
+                }
+
                 $result = $renderer->renderCombined($scale);
             }
+        } catch (InvalidRequestException $e) {
+            // Just let this expression throw
+            throw $e;
         } catch (\Exception $e) {
             throw new InvalidRequestException('Unable to render provided skin url');
         }
@@ -105,6 +116,10 @@ class RenderSkinHandler implements HandlerInterface {
         imagepng($result);
         $contents = ob_get_contents();
         ob_end_clean();
+
+        // if ($renderer->isSlim()) {
+        //     file_put_contents(__DIR__ . '/../../tests/data/char-rendered-slim-steve.png', $contents);
+        // }
 
         return new Response(200, ['Content-Type' => 'image/png'], $contents);
     }
