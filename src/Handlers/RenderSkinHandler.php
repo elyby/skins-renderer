@@ -18,7 +18,13 @@ class RenderSkinHandler implements HandlerInterface {
     private const MAX_RESPONSE_SIZE = 16000;
 
     // TODO: make it configurable
-    private const ALLOWED_HOSTS = ['ely.by', 'dev.ely.by', 'ely.by.local', 'upgrade.ely.by.local'];
+    private const ALLOWED_PATHS = [
+        'ely.by',
+        'dev.ely.by',
+        'ely.by.local',
+        'upgrade.ely.by.local',
+        'skinsystem.ely.by/skins',
+    ];
 
     /**
      * @var ClientInterface
@@ -57,8 +63,18 @@ class RenderSkinHandler implements HandlerInterface {
             throw new InvalidRequestException('Required query params not provided: url');
         }
 
-        $host = parse_url($url, PHP_URL_HOST);
-        if (!in_array($host, self::ALLOWED_HOSTS, true)) {
+        $parsedUrl = parse_url($url);
+        $path = $parsedUrl['host'] . $parsedUrl['path'];
+
+        $isPathAllowed = false;
+        foreach (self::ALLOWED_PATHS as $allowedPath) {
+            if (strpos($path, $allowedPath) === 0) {
+                $isPathAllowed = true;
+                break;
+            }
+        }
+
+        if (!$isPathAllowed) {
             return new Response(403);
         }
 
