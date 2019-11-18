@@ -151,6 +151,10 @@ class RenderSkinHandlerTest extends TestCase {
             ['url' => 'http://some-minecraft-resource.com/char.png'],
             403,
         ];
+        yield 'url not allowed on allowed host' => [
+            ['url' => 'http://skinsystem.ely.by/capes/char.png'],
+            403,
+        ];
         yield 'skin not found' => [
             ['url' => 'http://ely.by/char.png'],
             404,
