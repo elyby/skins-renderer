@@ -1,14 +1,13 @@
-FROM php:7.2.9-cli-alpine3.8
+FROM php:7.3.11-cli-alpine3.10
 
 WORKDIR /var/www/html
-ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # bash needed to support wait-for-it script
 RUN apk add --update --no-cache \
     git \
     openssh \
     # zip extension
-    zlib-dev \
+    libzip-dev \
     # gd extension
     freetype-dev \
     libjpeg-turbo-dev \
@@ -18,16 +17,16 @@ RUN apk add --update --no-cache \
     --with-jpeg-dir=/usr/include/ \
  && docker-php-ext-install -j$(nproc) gd zip pcntl opcache \
  && apk add --no-cache --virtual ".phpize-deps" $PHPIZE_DEPS \
- && yes | pecl install xdebug-2.6.1 \
+ && yes | pecl install xdebug-2.8.0 \
  && apk del ".phpize-deps" \
  && rm -rf /usr/share/man \
- && rm -rf /tmp/*
-
-COPY --from=composer:1.7.2 /usr/bin/composer /usr/bin/composer
-
-RUN mkdir /root/.composer \
- && echo '{"github-oauth": {"github.com": "81cbaaa04bb8f2c2fff61fa04870778e2a264052"}}' > ~/.composer/auth.json \
- && composer global require --no-progress "hirak/prestissimo:^0.3.7" \
+ && rm -rf /tmp/* \
+ # Install composer and global dependencies
+ && curl "https://getcomposer.org/download/1.9.1/composer.phar" -o /usr/bin/composer \
+ && chmod a+x /usr/bin/composer \
+ && mkdir /root/.composer \
+ && echo '{"github-oauth": {"github.com": "81cbaaa04bb8f2c2fff61fa04870778e2a264052"}}' > /root/.composer/auth.json \
+ && composer global require --no-progress "hirak/prestissimo:>=0.3.8" \
  && composer clear-cache
 
 COPY ./composer.* /var/www/html/
@@ -45,8 +44,9 @@ RUN if [ "$build_env" = "prod" ] ; then \
 COPY ./docker/*.ini /usr/local/etc/php/conf.d/
 COPY ./docker/docker-entrypoint.sh /usr/local/bin/
 
-COPY ./src /var/www/html/src/
 COPY ./ppm.json /var/www/html/ppm.json
+
+COPY ./src /var/www/html/src/
 
 EXPOSE 80
 

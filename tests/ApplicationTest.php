@@ -19,7 +19,7 @@ use React\Http\Response;
  */
 class ApplicationTest extends TestCase {
 
-    public function tearDown() {
+    protected function tearDown(): void {
         Test::clean();
     }
 

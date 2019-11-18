@@ -17,14 +17,13 @@
         "ext-mbstring": "*",
         "ErickSkrauch/SkinRenderer2D": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
-        "php-pm/php-pm": "^1.0",
+        "php-pm/php-pm": "^2.0.0",
         "psr/http-message": "^1.0"
     },
     "require-dev": {
         "codeception/aspect-mock": "^3.0",
-        "ely/php-code-style": "^0.2.0",
-        "friendsofphp/php-cs-fixer": "^2.13",
-        "phpunit/phpunit": "^7.3",
+        "ely/php-code-style": "^0.3.0",
+        "phpunit/phpunit": "^8.4.0",
         "roave/security-advisories": "dev-master"
     },
     "replace": {

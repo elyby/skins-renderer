@@ -33,7 +33,7 @@ class RenderSkinHandlerTest extends TestCase {
      */
     private $request;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->guzzleHandler = new MockHandler();
         $handler = HandlerStack::create($this->guzzleHandler);
         $client = new GuzzleClient(['handler' => $handler]);

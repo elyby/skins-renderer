@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Tests\Handlers;
 
+use Ely\SkinsRenderer\Exceptions\UnknownUrlException;
 use Ely\SkinsRenderer\Handlers;
 use Ely\SkinsRenderer\Handlers\HandlerFactory;
 use PHPUnit\Framework\TestCase;
@@ -26,9 +27,9 @@ class HandlerFactoryTest extends TestCase {
 
     /**
      * @covers \Ely\SkinsRenderer\Handlers\HandlerFactory::createFromRequest
-     * @expectedException \Ely\SkinsRenderer\Exceptions\UnknownUrlException
      */
     public function testCreateFromRequestUnknownUrl() {
+        $this->expectException(UnknownUrlException::class);
         HandlerFactory::createFromRequest($this->createRequest('/unknown-url'));
     }
 
