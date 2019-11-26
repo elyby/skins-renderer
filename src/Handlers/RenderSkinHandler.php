@@ -5,6 +5,7 @@ namespace Ely\SkinsRenderer\Handlers;
 
 use Ely\SkinsRenderer\Exceptions\InvalidRequestException;
 use Ely\SkinsRenderer\Renderer\Renderer as SkinsRenderer;
+use Ely\SkinsRenderer\Validators\UrlValidator;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -54,6 +55,7 @@ class RenderSkinHandler implements HandlerInterface {
      */
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $params = $request->getQueryParams();
+        /** @var string|null $url */
         $url = $params['url'] ?? null;
         $scale = (float)($params['scale'] ?? 3);
         $isSlim = (bool)($params['slim'] ?? false);
@@ -63,18 +65,8 @@ class RenderSkinHandler implements HandlerInterface {
             throw new InvalidRequestException('Required query params not provided: url');
         }
 
-        $parsedUrl = parse_url($url);
-        $path = $parsedUrl['host'] . $parsedUrl['path'];
-
-        $isPathAllowed = false;
-        foreach (self::ALLOWED_PATHS as $allowedPath) {
-            if (strpos($path, $allowedPath) === 0) {
-                $isPathAllowed = true;
-                break;
-            }
-        }
-
-        if (!$isPathAllowed) {
+        $urlValidator = new UrlValidator(self::ALLOWED_PATHS);
+        if (!$urlValidator->validate($url)) {
             return new Response(403);
         }
 
