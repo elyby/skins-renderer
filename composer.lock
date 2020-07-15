@@ -4,23 +4,33 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec70576a4ba451e12c56fb19953bf910",
+    "content-hash": "6cbcdedfb9dfe3e7a36a9e2078b8a3b4",
     "packages": [
         {
-            "name": "ErickSkrauch/SkinRenderer2D",
+            "name": "erickskrauch/skins-renderer-2d",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erickskrauch/SkinRenderer2D.git",
-                "reference": "369a28102474bd37105f83c206d2803b1b8e7e0d"
+                "reference": "ee14325587b3c1091fd2f875394e8348937ab6f3"
             },
             "require": {
-                "php": ">=5.3.0"
+                "ext-gd": "*"
+            },
+            "require-dev": {
+                "php": "^7.1|^8.0",
+                "phpunit/phpunit": "^9.2",
+                "spatie/phpunit-snapshot-assertions": "^4.2"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ErickSkrauch\\SkinRenderer2D\\": ""
+                    "ErickSkrauch\\SkinRenderer2D\\": "src"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "ErickSkrauch\\SkinRenderer2D\\Tests\\": "tests"
                 }
             },
             "license": [
@@ -37,7 +47,7 @@
                 "render",
                 "skin"
             ],
-            "time": "2015-03-12T18:33:22+00:00"
+            "time": "2020-07-15T13:17:01+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -4241,7 +4251,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "erickskrauch/skinrenderer2d": 20,
+        "erickskrauch/skins-renderer-2d": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
@@ -4251,5 +4261,6 @@
         "ext-gd": "*",
         "ext-mbstring": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

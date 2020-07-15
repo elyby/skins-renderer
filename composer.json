@@ -15,7 +15,7 @@
         "php": "^7.2.0",
         "ext-gd": "*",
         "ext-mbstring": "*",
-        "ErickSkrauch/SkinRenderer2D": "dev-master",
+        "erickskrauch/skins-renderer-2d": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
         "php-pm/php-pm": "^2.0.0",
         "psr/http-message": "^1.0"

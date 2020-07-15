@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Ely\SkinsRenderer\Handlers;
 
 use Ely\SkinsRenderer\Exceptions\InvalidRequestException;
-use Ely\SkinsRenderer\Renderer\Renderer as SkinsRenderer;
 use Ely\SkinsRenderer\Validators\UrlValidator;
+use ErickSkrauch\SkinRenderer2D\Renderer as SkinsRenderer;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
