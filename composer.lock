@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erickskrauch/SkinRenderer2D.git",
-                "reference": "ee14325587b3c1091fd2f875394e8348937ab6f3"
+                "reference": "cd03b5adde03e9485f3f0696d4667b4dab28eadd"
             },
             "require": {
                 "ext-gd": "*"
@@ -47,7 +47,7 @@
                 "render",
                 "skin"
             ],
-            "time": "2020-07-15T13:17:01+00:00"
+            "time": "2020-07-16T16:21:01+00:00"
         },
         {
             "name": "evenement/evenement",
