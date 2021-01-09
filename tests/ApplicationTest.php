@@ -17,13 +17,13 @@ use React\Http\Response;
 /**
  * @covers \Ely\SkinsRenderer\Application
  */
-class ApplicationTest extends TestCase {
+final class ApplicationTest extends TestCase {
 
     protected function tearDown(): void {
         Test::clean();
     }
 
-    public function testHandle() {
+    public function testHandle(): void {
         $expectedResponse = new Response(200, [], 'find me');
         $handler = $this->createMock(HandlerInterface::class);
         $handler->method('handle')->willReturn($expectedResponse);
@@ -42,7 +42,7 @@ class ApplicationTest extends TestCase {
         Exception $thrownException,
         int $expectedStatusCode,
         string $expectedMessageInDebugMode
-    ) {
+    ): void {
         Test::double(HandlerFactory::class, ['createFromRequest' => function() use ($thrownException) {
             throw $thrownException;
         }]);
@@ -59,20 +59,20 @@ class ApplicationTest extends TestCase {
         $this->assertSame($expectedMessageInDebugMode, (string)$response->getBody());
     }
 
-    public function getExceptionsMap() {
+    public function getExceptionsMap(): iterable {
         yield [new UnknownUrlException('/test'), 404, 'Unknown url'];
         yield [new InvalidRequestException('Find me'), 400, 'Find me'];
         yield [new Exception('Some shit happened'), 500, 'Some shit happened'];
     }
 
-    public function testSetEnvironment() {
+    public function testSetEnvironment(): void {
         $application = new Application();
         $this->assertSame('prod', $application->getEnvironment());
         $application->setEnvironment('dev');
         $this->assertSame('dev', $application->getEnvironment());
     }
 
-    public function testSetDebug() {
+    public function testSetDebug(): void {
         $application = new Application();
         $this->assertFalse($application->isDebug());
         $application->setDebug(true);

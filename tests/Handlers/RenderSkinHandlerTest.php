@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler
  */
-class RenderSkinHandlerTest extends TestCase {
+final class RenderSkinHandlerTest extends TestCase {
 
     /**
      * @var MockHandler
@@ -45,7 +45,7 @@ class RenderSkinHandlerTest extends TestCase {
     /**
      * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler::create
      */
-    public function testCreate() {
+    public function testCreate(): void {
         $result = RenderSkinHandler::create();
         $this->assertInstanceOf(RenderSkinHandler::class, $result);
     }
@@ -60,7 +60,7 @@ class RenderSkinHandlerTest extends TestCase {
         string $expectedResponseBodyPath = null,
         int $skinResponseStatus = null,
         string $skinResponseBody = null
-    ) {
+    ): void {
         $this->request->method('getQueryParams')->willReturn($queryParams);
         if ($skinResponseStatus !== null) {
             $this->guzzleHandler->append(new GuzzleResponse($skinResponseStatus, [], $skinResponseBody));
@@ -86,7 +86,7 @@ class RenderSkinHandlerTest extends TestCase {
         string $expectedExceptionMessage = null,
         int $skinResponseStatus = null,
         string $skinResponseBody = null
-    ) {
+    ): void {
         $this->expectException($expectedException);
         if ($expectedExceptionMessage !== null) {
             $this->expectExceptionMessage($expectedExceptionMessage);
@@ -101,7 +101,7 @@ class RenderSkinHandlerTest extends TestCase {
         $this->handler->handle($this->request);
     }
 
-    public function getResponseCases() {
+    public function getResponseCases(): iterable {
         // Skins renders
         yield 'success response' => [
             ['url' => 'http://ely.by/char.png'],
@@ -163,7 +163,7 @@ class RenderSkinHandlerTest extends TestCase {
         ];
     }
 
-    public function getExceptionCases() {
+    public function getExceptionCases(): iterable {
         yield 'url not provided' => [
             [],
             InvalidRequestException::class,

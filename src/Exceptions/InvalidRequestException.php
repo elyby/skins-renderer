@@ -5,6 +5,6 @@ namespace Ely\SkinsRenderer\Exceptions;
 
 use Exception;
 
-class InvalidRequestException extends Exception implements SkinsRendererException {
+final class InvalidRequestException extends Exception implements SkinsRendererException {
 
 }

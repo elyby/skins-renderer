@@ -13,13 +13,13 @@ use Psr\Http\Message\UriInterface;
 /**
  * @covers \Ely\SkinsRenderer\Handlers\HandlerFactory
  */
-class HandlerFactoryTest extends TestCase {
+final class HandlerFactoryTest extends TestCase {
 
     /**
      * @covers \Ely\SkinsRenderer\Handlers\HandlerFactory::createFromRequest
      * @dataProvider getCases
      */
-    public function testCreateFromRequest(string $inputUrl, string $handlerName) {
+    public function testCreateFromRequest(string $inputUrl, string $handlerName): void {
         /** @noinspection PhpUnhandledExceptionInspection */
         $result = HandlerFactory::createFromRequest($this->createRequest($inputUrl));
         $this->assertInstanceOf($handlerName, $result);
@@ -28,7 +28,7 @@ class HandlerFactoryTest extends TestCase {
     /**
      * @covers \Ely\SkinsRenderer\Handlers\HandlerFactory::createFromRequest
      */
-    public function testCreateFromRequestUnknownUrl() {
+    public function testCreateFromRequestUnknownUrl(): void {
         $this->expectException(UnknownUrlException::class);
         HandlerFactory::createFromRequest($this->createRequest('/unknown-url'));
     }
@@ -41,7 +41,7 @@ class HandlerFactoryTest extends TestCase {
      * @param string $inputUrl
      * @return \PHPUnit\Framework\MockObject\MockObject|ServerRequestInterface
      */
-    private function createRequest(string $inputUrl) {
+    private function createRequest(string $inputUrl): ServerRequestInterface {
         $uri = $this->createMock(UriInterface::class);
         $uri->method('getPath')->willReturn($inputUrl);
         $request = $this->createMock(ServerRequestInterface::class);

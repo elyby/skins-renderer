@@ -1,6 +1,4 @@
-FROM php:7.3.11-cli-alpine3.10
-
-WORKDIR /var/www/html
+FROM php:7.4.14-cli-alpine3.12
 
 # bash needed to support wait-for-it script
 RUN apk add --update --no-cache \
@@ -17,17 +15,17 @@ RUN apk add --update --no-cache \
     --with-jpeg-dir=/usr/include/ \
  && docker-php-ext-install -j$(nproc) gd zip pcntl opcache \
  && apk add --no-cache --virtual ".phpize-deps" $PHPIZE_DEPS \
- && yes | pecl install xdebug-2.8.0 \
+ && yes | pecl install xdebug-2.9.8 \
  && apk del ".phpize-deps" \
  && rm -rf /usr/share/man \
  && rm -rf /tmp/* \
  # Install composer and global dependencies
- && curl "https://getcomposer.org/download/1.9.1/composer.phar" -o /usr/bin/composer \
+ && curl "https://getcomposer.org/download/2.0.8/composer.phar" -o /usr/bin/composer \
  && chmod a+x /usr/bin/composer \
- && mkdir /root/.composer \
- && echo '{"github-oauth": {"github.com": "81cbaaa04bb8f2c2fff61fa04870778e2a264052"}}' > /root/.composer/auth.json \
- && composer global require --no-progress "hirak/prestissimo:>=0.3.8" \
- && composer clear-cache
+ # TODO: migrate to the build-pack secrets when they will implement compatibility with the docker-compose
+ # Feature: https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information
+ # Track issues: https://github.com/docker/compose/issues/6358, https://github.com/compose-spec/compose-spec/issues/81
+ && composer global config github-oauth.github.com "81cbaaa04bb8f2c2fff61fa04870778e2a264052"
 
 COPY ./composer.* /var/www/html/
 
@@ -35,7 +33,7 @@ ARG build_env=prod
 ENV APP_ENV=$build_env
 
 RUN if [ "$build_env" = "prod" ] ; then \
-        composer install --no-interaction --no-suggest --no-dev; \
+        composer install --no-interaction --no-suggest --no-dev --optimize-autoloader; \
     else \
         composer install --no-interaction --no-suggest; \
     fi \

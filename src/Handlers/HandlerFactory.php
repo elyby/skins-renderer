@@ -6,7 +6,7 @@ namespace Ely\SkinsRenderer\Handlers;
 use Ely\SkinsRenderer\Exceptions\UnknownUrlException;
 use Psr\Http\Message\RequestInterface;
 
-class HandlerFactory {
+final class HandlerFactory {
 
     /**
      * @param RequestInterface $request
