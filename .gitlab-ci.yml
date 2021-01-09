@@ -47,6 +47,9 @@ Composer:
     - .vendorCache
   cache:
     policy: pull-push
+  before_script:
+    - sudo composer self-update --2
+    - composer config github-oauth.github.com "$GITHUB_TOKEN"
   script:
     - composer install
 
