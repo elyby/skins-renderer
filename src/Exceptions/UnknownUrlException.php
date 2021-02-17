@@ -5,9 +5,9 @@ namespace Ely\SkinsRenderer\Exceptions;
 
 use Exception;
 
-class UnknownUrlException extends Exception implements SkinsRendererException {
+final class UnknownUrlException extends Exception implements SkinsRendererException {
 
-    private $url;
+    private string $url;
 
     public function __construct(string $url, int $code = 0, \Throwable $previous = null) {
         parent::__construct('Unknown url', $code, $previous);

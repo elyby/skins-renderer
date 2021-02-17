@@ -7,14 +7,14 @@ use Ely\SkinsRenderer\Exceptions\InvalidRequestException;
 use Ely\SkinsRenderer\Validators\UrlValidator;
 use ErickSkrauch\SkinRenderer2D\Renderer as SkinsRenderer;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\ClientInterface as HTTPClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 
-class RenderSkinHandler implements HandlerInterface {
+final class RenderSkinHandler implements HandlerInterface {
 
     private const MAX_RESPONSE_SIZE = 16000;
 
@@ -27,12 +27,9 @@ class RenderSkinHandler implements HandlerInterface {
         'skinsystem.ely.by/skins',
     ];
 
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private HTTPClientInterface $client;
 
-    public function __construct(ClientInterface $client) {
+    public function __construct(HTTPClientInterface $client) {
         $this->client = $client;
     }
 
@@ -122,12 +119,7 @@ class RenderSkinHandler implements HandlerInterface {
 
         ob_start();
         imagepng($result);
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        // if ($renderer->isSlim()) {
-        //     file_put_contents(__DIR__ . '/../../tests/data/char-rendered-slim-steve.png', $contents);
-        // }
+        $contents = ob_get_clean();
 
         return new Response(200, ['Content-Type' => 'image/png'], $contents);
     }

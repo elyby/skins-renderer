@@ -10,11 +10,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 use function RingCentral\Psr7\stream_for;
 
-class Application {
+final class Application {
 
-    private $isDebug = false;
+    private bool $isDebug = false;
 
-    private $environment = 'prod';
+    private string $environment = 'prod';
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {

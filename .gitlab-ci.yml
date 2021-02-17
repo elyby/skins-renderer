@@ -5,7 +5,7 @@ stages:
   - cleanup
 
 variables:
-  PHP_BUILD_IMAGE: edbizarro/gitlab-ci-pipeline-php:7.3-alpine
+  PHP_BUILD_IMAGE: edbizarro/gitlab-ci-pipeline-php:7.4-alpine
   DOCKER_BUILD_IMAGE: docker:19.03.2
 
   APP_IMAGE_NAME: "$CI_REGISTRY_IMAGE"
@@ -40,15 +40,18 @@ variables:
 # Prepare stage #
 #################
 
-Precache dependencies:
+Composer:
   stage: prepare
   image: $PHP_BUILD_IMAGE
   extends:
     - .vendorCache
   cache:
     policy: pull-push
+  before_script:
+    - sudo composer self-update --2
+    - composer config github-oauth.github.com "$GITHUB_TOKEN"
   script:
-    - composer install --ignore-platform-reqs
+    - composer install
 
 #################
 # Testing stage #

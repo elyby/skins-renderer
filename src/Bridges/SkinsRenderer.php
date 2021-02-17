@@ -10,12 +10,9 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @codeCoverageIgnore
  */
-class SkinsRenderer implements BridgeInterface {
+final class SkinsRenderer implements BridgeInterface {
 
-    /**
-     * @var Application
-     */
-    private $application;
+    private Application $application;
 
     public function bootstrap($appBootstrap, $env, $debug): void {
         $this->application = new Application();

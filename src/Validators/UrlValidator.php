@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Validators;
 
-class UrlValidator {
+final class UrlValidator {
 
     /**
-     * @var array
+     * @var string[]
      */
-    private $allowedURLs;
+    private array $allowedURLs;
 
+    /**
+     * @param string[] $allowedURLs
+     */
     public function __construct(array $allowedURLs) {
         $this->allowedURLs = $allowedURLs;
     }

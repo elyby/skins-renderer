@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Tests\Validators;
 
@@ -9,19 +9,19 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Ely\SkinsRenderer\Validators\UrlValidator
  */
-class UrlValidatorTest extends TestCase {
+final class UrlValidatorTest extends TestCase {
 
     /**
      * @dataProvider getValidateCases
      * @covers \Ely\SkinsRenderer\Validators\UrlValidator::validate
      */
-    public function testValidate(string $url, array $allowedUrls, bool $expectedResult) {
+    public function testValidate(string $url, array $allowedUrls, bool $expectedResult): void {
         $validator = new UrlValidator($allowedUrls);
         $result = $validator->validate($url);
         $this->assertSame($expectedResult, $result);
     }
 
-    public function getValidateCases() {
+    public function getValidateCases(): iterable {
         yield 'valid link, valid domain' => [
             'http://example.com/valid.url',
             ['example.com'],
