@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erickskrauch/SkinRenderer2D.git",
-                "reference": "cd03b5adde03e9485f3f0696d4667b4dab28eadd"
+                "reference": "016c62a2f21c7e1e2bbfbd7bfde37c85dd244eea"
             },
             "require": {
                 "ext-gd": "*"
@@ -22,6 +22,7 @@
                 "phpunit/phpunit": "^9.2",
                 "spatie/phpunit-snapshot-assertions": "^4.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -47,7 +48,7 @@
                 "render",
                 "skin"
             ],
-            "time": "2020-07-16T16:21:01+00:00"
+            "time": "2021-02-17T23:20:28+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -4262,5 +4263,5 @@
         "ext-mbstring": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }
