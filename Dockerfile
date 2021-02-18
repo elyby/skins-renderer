@@ -25,15 +25,15 @@ RUN apk add --update --no-cache \
  # Track issues: https://github.com/docker/compose/issues/6358, https://github.com/compose-spec/compose-spec/issues/81
  && composer global config github-oauth.github.com "81cbaaa04bb8f2c2fff61fa04870778e2a264052"
 
-COPY ./composer.* /var/www/html/
+COPY composer.* /var/www/html/
 
 ARG build_env=prod
 ENV APP_ENV=$build_env
 
 RUN if [ "$build_env" = "prod" ] ; then \
-        composer install --no-interaction --no-suggest --no-dev --optimize-autoloader; \
+        composer install --no-interaction --no-dev --optimize-autoloader; \
     else \
-        composer install --no-interaction --no-suggest; \
+        composer install --no-interaction; \
     fi \
  && composer clear-cache
 
