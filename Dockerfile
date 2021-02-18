@@ -1,4 +1,6 @@
-FROM php:7.4.14-cli-alpine3.12
+FROM php:7.4.15-cli-alpine3.13
+
+WORKDIR /var/www/html
 
 # bash needed to support wait-for-it script
 RUN apk add --update --no-cache \

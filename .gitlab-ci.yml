@@ -88,11 +88,11 @@ Docker:
     - docker pull "$APP_LATEST_IMAGE_NAME" || true
     # Build image
     - >
-      docker build
+      docker build .
       --pull
       --cache-from "$APP_LATEST_IMAGE_NAME"
       -t "$APP_VERSIONED_IMAGE_NAME"
-      -t "$APP_LATEST_IMAGE_NAME" .
+      -t "$APP_LATEST_IMAGE_NAME"
     # Push images to the registry
     - docker push $APP_VERSIONED_IMAGE_NAME
     - docker push $APP_LATEST_IMAGE_NAME
