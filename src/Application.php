@@ -7,7 +7,7 @@ use Ely\SkinsRenderer\Handlers\HandlerFactory;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use React\Http\Response;
+use React\Http\Message\Response;
 use function RingCentral\Psr7\stream_for;
 
 final class Application {
