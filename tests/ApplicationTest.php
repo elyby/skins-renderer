@@ -12,7 +12,7 @@ use Ely\SkinsRenderer\Handlers\HandlerInterface;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use React\Http\Response;
+use React\Http\Message\Response;
 
 /**
  * @covers \Ely\SkinsRenderer\Application
