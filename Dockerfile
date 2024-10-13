@@ -1,31 +1,13 @@
+# syntax=docker/dockerfile:1
+
 FROM php:7.4.33-cli-alpine3.16
 
 WORKDIR /var/www/html
 
-# bash needed to support wait-for-it script
-RUN apk add --update --no-cache \
-    git \
-    openssh \
-    # zip extension
-    libzip-dev \
-    # gd extension
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install -j$(nproc) gd zip pcntl opcache \
- && apk add --no-cache --virtual ".phpize-deps" $PHPIZE_DEPS \
- && yes | pecl install xdebug-2.9.8 \
- && apk del ".phpize-deps" \
- && rm -rf /usr/share/man \
- && rm -rf /tmp/* \
- # Install composer and global dependencies
- && curl "https://getcomposer.org/download/2.0.8/composer.phar" -o /usr/bin/composer \
- && chmod a+x /usr/bin/composer \
- # TODO: migrate to the build-pack secrets when they will implement compatibility with the docker-compose
- # Feature: https://docs.docker.com/develop/develop-images/build_enhancements/#new-docker-build-secret-information
- # Track issues: https://github.com/docker/compose/issues/6358, https://github.com/compose-spec/compose-spec/issues/81
- && composer global config github-oauth.github.com "81cbaaa04bb8f2c2fff61fa04870778e2a264052"
+RUN --mount=type=bind,from=mlocati/php-extension-installer:latest,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
+    ########################################
+    apk add --update --no-cache git openssh \
+ && install-php-extensions @composer zip gd pcntl xdebug
 
 COPY composer.* /var/www/html/
 

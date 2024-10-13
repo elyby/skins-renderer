@@ -13,6 +13,7 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
+use Throwable;
 
 final class RenderSkinHandler implements HandlerInterface {
 
@@ -97,7 +98,8 @@ final class RenderSkinHandler implements HandlerInterface {
         }
 
         try {
-            $renderer = SkinsRenderer::assignSkinFromString($textures);
+            $image = @imagecreatefromstring($textures);
+            $renderer = new SkinsRenderer($image);
             if ($renderFace) {
                 $result = $renderer->renderFace($scale);
             } else {
@@ -113,8 +115,8 @@ final class RenderSkinHandler implements HandlerInterface {
         } catch (InvalidRequestException $e) {
             // Just let this expression throw
             throw $e;
-        } catch (\Exception $e) {
-            throw new InvalidRequestException('Unable to render provided skin url');
+        } catch (Throwable $e) {
+            throw new InvalidRequestException('Unable to render provided skin url', 0, $e);
         }
 
         ob_start();

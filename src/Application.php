@@ -48,7 +48,14 @@ final class Application {
     private function buildResponseFromException(int $statusCode, Exception $e): ResponseInterface {
         $response = new Response($statusCode);
         if ($this->isDebug) {
-            $response = $response->withBody(stream_for($e->getMessage()));
+            $message = $e->getMessage();
+            $parent = $e->getPrevious();
+            while ($parent !== null) {
+                $message .= ' CAUSED BY ' . $parent->getMessage();
+                $parent = $parent->getPrevious();
+            }
+
+            $response = $response->withBody(stream_for($message));
         }
 
         return $response;
