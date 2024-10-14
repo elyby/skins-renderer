@@ -2,7 +2,6 @@ stages:
   - prepare
   - tests
   - build
-  - cleanup
 
 variables:
   PHP_BUILD_IMAGE: edbizarro/gitlab-ci-pipeline-php:7.4-alpine
@@ -96,24 +95,6 @@ Docker:
     # Push images to the registry
     - docker push $APP_VERSIONED_IMAGE_NAME
     - docker push $APP_LATEST_IMAGE_NAME
-  only:
-    - master
-    - tags
-
-#################
-# Cleanup stage #
-#################
-
-Remove Docker images:
-  stage: cleanup
-  image: $DOCKER_BUILD_IMAGE
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    - *defineVars
-  script:
-    - docker rmi "$APP_LATEST_IMAGE_NAME" "$APP_VERSIONED_IMAGE_NAME" || true
-  when: always
   only:
     - master
     - tags
