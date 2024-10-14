@@ -14,7 +14,9 @@ COPY composer.* /var/www/html/
 ARG build_env=prod
 ENV APP_ENV=$build_env
 
-RUN if [ "$build_env" = "prod" ] ; then \
+RUN --mount=type=secret,id=composer-auth,target=auth.json \
+    ########################################
+    if [ "$build_env" = "prod" ] ; then \
         composer install --no-interaction --no-dev --optimize-autoloader; \
     else \
         composer install --no-interaction; \

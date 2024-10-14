@@ -48,8 +48,7 @@ Composer:
   cache:
     policy: pull-push
   before_script:
-    - sudo composer self-update --2
-    - composer config github-oauth.github.com "$GITHUB_TOKEN"
+    - export COMPOSER_AUTH="$(cat $COMPOSER_AUTH_FILE)"
   script:
     - composer install
 
@@ -91,6 +90,7 @@ Docker:
       docker build .
       --pull
       --cache-from "$APP_LATEST_IMAGE_NAME"
+      --secret "id=composer-auth,src=$COMPOSER_AUTH_FILE"
       -t "$APP_VERSIONED_IMAGE_NAME"
       -t "$APP_LATEST_IMAGE_NAME"
     # Push images to the registry
