@@ -9,21 +9,24 @@
         }
     ],
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/runtime": true
+        }
     },
     "require": {
-        "php": "^7.4",
+        "php": "^8.3",
         "ext-gd": "*",
         "ext-mbstring": "*",
         "erickskrauch/skins-renderer-2d": "dev-master",
         "guzzlehttp/guzzle": "^7",
-        "php-pm/php-pm": "^2.0.0",
-        "psr/http-message": "^1.0"
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "runtime/psr-guzzle": "^0.1.0"
     },
     "require-dev": {
-        "codeception/aspect-mock": "^3.0",
-        "ely/php-code-style": "^0.3.0",
-        "phpunit/phpunit": "^8.4.0",
+        "ely/php-code-style": "^1",
+        "phpunit/phpunit": "^11",
         "roave/security-advisories": "dev-latest"
     },
     "replace": {
@@ -40,8 +43,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Ely\\SkinsRenderer\\": "src",
-            "PHPPM\\Bridges\\": "src/Bridges"
+            "Ely\\SkinsRenderer\\": "src"
         }
     },
     "autoload-dev": {

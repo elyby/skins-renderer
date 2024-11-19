@@ -1,0 +1,16 @@
+{
+    http_port 8081
+    https_port 8444
+
+    frankenphp {
+        worker {
+            file /home/erickskrauch/projects/elyby/skins-renderer/src/index.php
+            env APP_RUNTIME Runtime\\PsrGuzzle\\Runtime
+            # watch ./src
+        }
+    }
+}
+
+localhost {
+	php_server
+}

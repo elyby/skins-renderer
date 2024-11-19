@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Exceptions;
 
-interface SkinsRendererException {
+use Throwable;
+
+interface SkinsRendererException extends Throwable {
 
 }

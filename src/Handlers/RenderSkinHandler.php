@@ -10,17 +10,21 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface as HTTPClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use React\Http\Message\Response;
+use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
-final class RenderSkinHandler implements HandlerInterface {
+final readonly class RenderSkinHandler implements RequestHandlerInterface {
 
-    private const MAX_RESPONSE_SIZE = 16000;
+    private const int MAX_RESPONSE_SIZE = 16000;
 
     // TODO: make it configurable
-    private const ALLOWED_PATHS = [
+    /**
+     * @var list<string>
+     */
+    private const array ALLOWED_PATHS = [
         'ely.by',
         'dev.ely.by',
         'ely.by.local',
@@ -28,14 +32,16 @@ final class RenderSkinHandler implements HandlerInterface {
         'skinsystem.ely.by/skins',
     ];
 
-    private HTTPClientInterface $client;
+    private UrlValidator $validator;
 
-    public function __construct(HTTPClientInterface $client) {
-        $this->client = $client;
+    public function __construct(
+        private HTTPClientInterface $client,
+    ) {
+        $this->validator = new UrlValidator(self::ALLOWED_PATHS);
     }
 
     public static function create(): self {
-        return new static(new GuzzleClient([
+        return new self(new GuzzleClient([
             'connect_timeout' => 5,
             'decode_content' => false,
             'read_timeout' => 5,
@@ -45,9 +51,6 @@ final class RenderSkinHandler implements HandlerInterface {
     }
 
     /**
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
      * @throws GuzzleException
      * @throws InvalidRequestException
      */
@@ -63,8 +66,7 @@ final class RenderSkinHandler implements HandlerInterface {
             throw new InvalidRequestException('Required query params not provided: url');
         }
 
-        $urlValidator = new UrlValidator(self::ALLOWED_PATHS);
-        if (!$urlValidator->validate($url)) {
+        if (!$this->validator->validate($url)) {
             return new Response(403);
         }
 

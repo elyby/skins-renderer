@@ -4,24 +4,21 @@ declare(strict_types=1);
 namespace Ely\SkinsRenderer\Tests\Validators;
 
 use Ely\SkinsRenderer\Validators\UrlValidator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Ely\SkinsRenderer\Validators\UrlValidator
- */
+#[CoversClass(UrlValidator::class)]
 final class UrlValidatorTest extends TestCase {
 
-    /**
-     * @dataProvider getValidateCases
-     * @covers \Ely\SkinsRenderer\Validators\UrlValidator::validate
-     */
+    #[DataProvider('getValidateCases')]
     public function testValidate(string $url, array $allowedUrls, bool $expectedResult): void {
         $validator = new UrlValidator($allowedUrls);
         $result = $validator->validate($url);
         $this->assertSame($expectedResult, $result);
     }
 
-    public function getValidateCases(): iterable {
+    public static function getValidateCases(): iterable {
         yield 'valid link, valid domain' => [
             'http://example.com/valid.url',
             ['example.com'],

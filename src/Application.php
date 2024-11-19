@@ -3,51 +3,37 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer;
 
-use Ely\SkinsRenderer\Handlers\HandlerFactory;
-use Exception;
+use Ely\SkinsRenderer\Handlers\RenderSkinHandler;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use React\Http\Message\Response;
-use function RingCentral\Psr7\stream_for;
+use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
-final class Application {
+final readonly class Application implements RequestHandlerInterface {
 
-    private bool $isDebug = false;
+    private RequestHandlerInterface $handler;
 
-    private string $environment = 'prod';
+    public function __construct(
+        private bool $debug = false,
+    ) {
+        $this->handler = RenderSkinHandler::create();
+    }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            return HandlerFactory::createFromRequest($request)->handle($request);
-        } catch (Exceptions\UnknownUrlException $e) {
-            return $this->buildResponseFromException(404, $e);
+            return $this->handler->handle($request);
         } catch (Exceptions\InvalidRequestException $e) {
             return $this->buildResponseFromException(400, $e);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $this->buildResponseFromException(500, $e);
         }
     }
 
-    public function isDebug(): bool {
-        return $this->isDebug;
-    }
-
-    public function setDebug(bool $isDebug): void {
-        $this->isDebug = $isDebug;
-    }
-
-    public function getEnvironment(): string {
-        return $this->environment;
-    }
-
-    public function setEnvironment(string $environment): void {
-        $this->environment = $environment;
-    }
-
-    private function buildResponseFromException(int $statusCode, Exception $e): ResponseInterface {
+    private function buildResponseFromException(int $statusCode, Throwable $e): ResponseInterface {
         $response = new Response($statusCode);
-        if ($this->isDebug) {
+        if ($this->debug) {
             $message = $e->getMessage();
             $parent = $e->getPrevious();
             while ($parent !== null) {
@@ -55,7 +41,7 @@ final class Application {
                 $parent = $parent->getPrevious();
             }
 
-            $response = $response->withBody(stream_for($message));
+            $response = $response->withBody(Psr7Utils::streamFor($message));
         }
 
         return $response;

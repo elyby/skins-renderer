@@ -10,56 +10,41 @@ use GuzzleHttp\Exception\ServerException as GuzzleServerException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler
- */
+#[CoversClass(RenderSkinHandler::class)]
 final class RenderSkinHandlerTest extends TestCase {
 
-    /**
-     * @var MockHandler
-     */
-    private $guzzleHandler;
+    private MockHandler $guzzleHandler;
 
-    /**
-     * @var RenderSkinHandler
-     */
-    private $handler;
+    private RenderSkinHandler $handler;
 
-    /**
-     * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
+    private ServerRequestInterface&MockObject $request;
 
     protected function setUp(): void {
         $this->guzzleHandler = new MockHandler();
         $handler = HandlerStack::create($this->guzzleHandler);
         $client = new GuzzleClient(['handler' => $handler]);
-        /** @var RenderSkinHandler|\PHPUnit\Framework\MockObject\MockObject application */
         $this->handler = new RenderSkinHandler($client);
         $this->request = $this->createMock(ServerRequestInterface::class);
     }
 
-    /**
-     * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler::create
-     */
     public function testCreate(): void {
-        $result = RenderSkinHandler::create();
-        $this->assertInstanceOf(RenderSkinHandler::class, $result);
+        $this->expectNotToPerformAssertions();
+        RenderSkinHandler::create();
     }
 
-    /**
-     * @dataProvider getResponseCases
-     * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler::handle
-     */
+    #[DataProvider('getResponseCases')]
     public function testHandleWithResponse(
         array $queryParams,
         int $expectedResponseStatus,
         string $expectedResponseBodyPath = null,
         int $skinResponseStatus = null,
-        string $skinResponseBody = null
+        string $skinResponseBody = null,
     ): void {
         $this->request->method('getQueryParams')->willReturn($queryParams);
         if ($skinResponseStatus !== null) {
@@ -76,16 +61,13 @@ final class RenderSkinHandlerTest extends TestCase {
         }
     }
 
-    /**
-     * @dataProvider getExceptionCases
-     * @covers \Ely\SkinsRenderer\Handlers\RenderSkinHandler::handle
-     */
+    #[DataProvider('getExceptionCases')]
     public function testHandleWithException(
         array $queryParams,
         string $expectedException,
         string $expectedExceptionMessage = null,
         int $skinResponseStatus = null,
-        string $skinResponseBody = null
+        string $skinResponseBody = null,
     ): void {
         $this->expectException($expectedException);
         if ($expectedExceptionMessage !== null) {
@@ -101,7 +83,7 @@ final class RenderSkinHandlerTest extends TestCase {
         $this->handler->handle($this->request);
     }
 
-    public function getResponseCases(): iterable {
+    public static function getResponseCases(): iterable {
         // Skins renders
         yield 'success response' => [
             ['url' => 'http://ely.by/char.png'],
@@ -163,7 +145,7 @@ final class RenderSkinHandlerTest extends TestCase {
         ];
     }
 
-    public function getExceptionCases(): iterable {
+    public static function getExceptionCases(): iterable {
         yield 'url not provided' => [
             [],
             InvalidRequestException::class,

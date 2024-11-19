@@ -3,18 +3,14 @@ declare(strict_types=1);
 
 namespace Ely\SkinsRenderer\Validators;
 
-final class UrlValidator {
+final readonly class UrlValidator {
 
     /**
-     * @var string[]
+     * @param list<string> $allowedURLs
      */
-    private array $allowedURLs;
-
-    /**
-     * @param string[] $allowedURLs
-     */
-    public function __construct(array $allowedURLs) {
-        $this->allowedURLs = $allowedURLs;
+    public function __construct(
+        private array $allowedURLs,
+    ) {
     }
 
     public function validate(string $url): bool {
@@ -26,7 +22,7 @@ final class UrlValidator {
         $path = $parsedUrl['host'] . $parsedUrl['path'];
 
         foreach ($this->allowedURLs as $allowedPath) {
-            if (strpos($path, $allowedPath) === 0) {
+            if (str_starts_with($path, $allowedPath)) {
                 return true;
             }
         }
